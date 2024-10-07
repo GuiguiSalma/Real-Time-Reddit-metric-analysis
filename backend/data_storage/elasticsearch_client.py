@@ -1,7 +1,9 @@
 from elasticsearch import Elasticsearch
 
+# Set up Elasticsearch connection
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
+# Store a document to Elasticsearch with the given sentiment score
 def store_to_elasticsearch(post, sentiment_score):
     doc = {
         'post': post,
@@ -9,6 +11,7 @@ def store_to_elasticsearch(post, sentiment_score):
     }
     es.index(index='reddit', body=doc)
 
+# Get the top words from a given subreddit (optional)
 def get_top_words(subreddit):
     response = es.search(
         index="reddit",
@@ -21,15 +24,24 @@ def get_top_words(subreddit):
     )
     return response['aggregations']['top_words']['buckets']
 
-def get_metrics(subreddit):
+# Get metrics for a specific country from Elasticsearch
+def get_country_metrics(country):
     response = es.search(
-        index="reddit",
+        index="reddit-country-metrics",  # Use the updated index
         body={
-            "query": {"match": {"subreddit": subreddit}},
-            "aggregations": {
-                "upvotes": {"sum": {"field": "upvotes"}},
-                "comments": {"sum": {"field": "comments"}}
+            "query": {"match": {"country": country}},  # Match country
+            "aggs": {
+                "total_upvotes": {"sum": {"field": "total_upvotes"}},
+                "total_comments": {"sum": {"field": "total_comments"}},
+                "avg_sentiment": {"avg": {"field": "avg_sentiment"}}
             }
         }
     )
-    return response['aggregations']
+
+    # Extract aggregated results
+    metrics = response['aggregations']
+    return {
+        'total_upvotes': metrics['total_upvotes']['value'],
+        'total_comments': metrics['total_comments']['value'],
+        'avg_sentiment': metrics['avg_sentiment']['value']
+    }

@@ -2,8 +2,10 @@ FROM node:14
 
 WORKDIR /usr/src/app
 
-COPY . .
-
+COPY package.json /usr/src/app/package.json
 RUN npm install
 
-EXPOSE 3000
+# Copy everything else (including src/ and public/)
+COPY . /usr/src/app  
+
+CMD ["npm", "start"]

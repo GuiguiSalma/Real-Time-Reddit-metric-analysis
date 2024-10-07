@@ -10,7 +10,9 @@ services:
       - "5000:5000"
     volumes:
       - ./backend:/usr/src/app  # Map your local backend code
-    command: python main.py
+    command: python app/main.py
+
+
 
   frontend:
     build: ./frontend
@@ -18,4 +20,5 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/usr/src/app  # Map your local frontend code
+      - /usr/src/app/node_modules  # Ensure node_modules inside the container is preserved
     command: npm start

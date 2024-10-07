@@ -2,10 +2,11 @@ FROM python:3.8-slim-buster
 
 WORKDIR /usr/src/app
 
-COPY . .
+# Copy everything from the backend directory into the container's working directory
+COPY . /usr/src/app
 
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 9092 7077
-
-CMD ["python", "./main.py"]
+# Run the application
+CMD ["python", "app/main.py"]

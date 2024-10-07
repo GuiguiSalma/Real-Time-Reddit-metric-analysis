@@ -1,30 +1,39 @@
 import React, { useEffect, useRef } from 'react';
 import Globe from 'globe.gl';
-import axios from 'axios';
 
-const GlobeVisualization = () => {
+const GlobeVisualization = ({ onCountrySelect }) => {
   const globeEl = useRef();
 
   useEffect(() => {
+    // Initialize the globe
     const globe = Globe()(globeEl.current)
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png');
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .onGlobeClick((latLng) => handleCountryClick(latLng));
 
-    fetchSubredditData(globe);
-
-    return () => {
-      globe.dispose();
-    };
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = 0.7;
   }, []);
 
-  const fetchSubredditData = async () => {
-    const response = await axios.get('/api/globe-subreddit-data');
-    globe.pointsData(response.data)
-      .pointAltitude('upvotes')
-      .pointColor(() => 'orange');
+  const handleCountryClick = (latLng) => {
+    const country = findCountryFromLatLng(latLng);  // Implement this function to map lat/lng to country
+    if (country) {
+      // Zoom into the selected country
+      globeEl.current.pointOfView({ lat: country.lat, lng: country.lng, altitude: 1.5 }, 2000);
+
+      // Fetch metrics for the selected country from the backend
+      fetch(`/api/country/${country.name}`)
+        .then(res => res.json())
+        .then(data => onCountrySelect(country.name, data))  // Pass country and data to App
+        .catch(error => console.error('Error fetching data:', error));
+    }
   };
 
-  return <div ref={globeEl} style={{ width: '100%', height: '500px' }} />;
+  return (
+    <div>
+      <div ref={globeEl} style={{ height: '600px' }} />
+    </div>
+  );
 };
 
 export default GlobeVisualization;
