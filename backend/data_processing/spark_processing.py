@@ -1,8 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf
+from pyspark.sql.functions import udf, explode, split
 from textblob import TextBlob
-from kafka import KafkaConsumer
-import json
 
 # Initialize Spark session
 spark = SparkSession.builder \
@@ -15,7 +13,6 @@ def analyze_sentiment(text):
 
 sentiment_udf = udf(analyze_sentiment)
 
-# Kafka consumer
 def process_reddit_stream():
     df = spark \
         .readStream \
@@ -24,9 +21,9 @@ def process_reddit_stream():
         .option("subscribe", "reddit-topic") \
         .load()
     
-    # Process the Kafka stream
-    df = df.selectExpr("CAST(value AS STRING)")
-    df = df.withColumn("sentiment", sentiment_udf(df.value))
+    # Process Kafka stream
+    df = df.selectExpr("CAST(value AS STRING) as json_string")
+    df = df.withColumn("sentiment", sentiment_udf(df.json_string))
 
     # Write results to Elasticsearch
     df.writeStream \

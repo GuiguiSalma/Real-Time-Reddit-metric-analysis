@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    environment:
+      BOOTSTRAP_SERVERS: localhost:9092  # Kafka locally installed
+      ELASTICSEARCH_HOST: localhost:9200  # Elasticsearch locally installed
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/usr/src/app  # Map your local backend code
+    command: python main.py
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app  # Map your local frontend code
+    command: npm start

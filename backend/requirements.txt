@@ -1,0 +1,5 @@
+praw==7.5.0
+kafka-python==2.0.2
+textblob==0.15.3
+elasticsearch==7.14.0
+pyspark==3.1.2
