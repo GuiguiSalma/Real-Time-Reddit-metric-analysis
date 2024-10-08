@@ -8,12 +8,12 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "axios": "^1.7.7",
+    "globe.gl": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "axios": "^0.21.1",
-    "three": "^0.125.0",
-    "globe.gl": "^4.0.0"
+    "react-scripts": "^5.0.1",
+    "three": "^0.125.0"
   },
   "browserslist": {
     "production": [
