@@ -10,7 +10,7 @@ In more put together words:
 ## Data Architecture Diagram
 Below is the data architecture diagram that illustrates how the pipeline functions:
 
-![Data Architecture Diagram](images/reddit.webp)
+![Data Architecture Diagram](images/reddit.jpg)
 
 ## Tools
 * Kafka
