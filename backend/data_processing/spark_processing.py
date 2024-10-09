@@ -3,7 +3,7 @@ from pyspark.sql.functions import udf, col, from_json, sum, avg
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from textblob import TextBlob
 
-# UDF to analyze sentiment using TextBlob
+
 def analyze_sentiment(text):
     return TextBlob(text).sentiment.polarity
 
@@ -17,14 +17,12 @@ def process_reddit_stream():
         StructField("subreddit", StringType()),
         StructField("upvotes", IntegerType()),
         StructField("comments", IntegerType()),
-        StructField("country", StringType()),  # Assuming country data exists
+        StructField("country", StringType()),  
         StructField("created_utc", StringType())
     ])
 
-    # Register the UDF for sentiment analysis
     sentiment_udf = udf(analyze_sentiment)
 
-    # Read the data stream from Kafka
     df = spark \
         .readStream \
         .format("kafka") \
@@ -36,7 +34,6 @@ def process_reddit_stream():
     df = df.selectExpr("CAST(value AS STRING) as value")
     df = df.withColumn("value", from_json(col("value"), reddit_schema))
 
-    # Add sentiment column
     df = df.withColumn("sentiment", sentiment_udf(col("value.selftext")))
 
     # Aggregate data by country
@@ -52,6 +49,6 @@ def process_reddit_stream():
         .format("org.elasticsearch.spark.sql") \
         .option("checkpointLocation", "/path/to/checkpoint") \
         .option("es.nodes", "localhost:9200") \
-        .start("reddit-country-metrics")  # Index in Elasticsearch
+        .start("reddit-country-metrics")  # Index in Elasticsearch(MAKE SURE IT'S THE SAME AS IN THE FRONTEND AND IN THE ELASTICSEARCH CLIENT)
 
     spark.streams.awaitAnyTermination()

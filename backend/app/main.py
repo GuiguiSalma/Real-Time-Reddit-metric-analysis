@@ -7,14 +7,10 @@ app = Flask(__name__)
 
 def main():
     print("Starting Reddit Metric Analysis...")
-
-    # Start Kafka producer to stream Reddit posts
     reddit_producer()
-
-    # Start Spark Streaming to process data in real-time
     process_reddit_stream()
 
-# Flask route to serve country metrics for the frontend
+# Flask route to serve country metrics for the frontend(if you don't wanna add the filter on country, well you ain't needing this section :p)
 @app.route('/api/country/<country_name>', methods=['GET'])
 def get_metrics_for_country(country_name):
     try:
@@ -26,5 +22,4 @@ def get_metrics_for_country(country_name):
 
 if __name__ == "__main__":
     main()
-    # Run the Flask app to serve the API
     app.run(host="0.0.0.0", port=5000)

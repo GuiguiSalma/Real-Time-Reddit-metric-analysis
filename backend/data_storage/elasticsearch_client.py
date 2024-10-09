@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 
-# Set up Elasticsearch connection
+
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
 # Store a document to Elasticsearch with the given sentiment score
@@ -11,7 +11,7 @@ def store_to_elasticsearch(post, sentiment_score):
     }
     es.index(index='reddit', body=doc)
 
-# Get the top words from a given subreddit (optional)
+# Get the top words from a given subreddit (optional,add the ones you want)
 def get_top_words(subreddit):
     response = es.search(
         index="reddit",
@@ -27,9 +27,9 @@ def get_top_words(subreddit):
 # Get metrics for a specific country from Elasticsearch
 def get_country_metrics(country):
     response = es.search(
-        index="reddit-country-metrics",  # Use the updated index
+        index="reddit-country-metrics", 
         body={
-            "query": {"match": {"country": country}},  # Match country
+            "query": {"match": {"country": country}},  
             "aggs": {
                 "total_upvotes": {"sum": {"field": "total_upvotes"}},
                 "total_comments": {"sum": {"field": "total_comments"}},

@@ -2,8 +2,8 @@ import praw
 
 def get_reddit_client():
     reddit = praw.Reddit(
-        client_id='REMOVED',
-        client_secret='U AIN'T GETTING MY KEY',
-        user_agent='Metric Analysis'
+        client_id='no',
+        client_secret='non',
+        user_agent='LA27'
     )
     return reddit
