@@ -5,3 +5,4 @@ node_modules/
 .idea/
 .pytest_cache/
 .mypy_cache/
+./backend/data_ingestion/praw_config.py
